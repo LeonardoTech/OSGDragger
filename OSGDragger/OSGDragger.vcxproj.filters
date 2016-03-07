@@ -21,9 +21,15 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="PickModelHandler.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OSGCommon.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="PickModelHandler.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

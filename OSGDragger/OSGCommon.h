@@ -12,3 +12,5 @@
 #include <osg/Camera>
 #include <osg/GraphicsContext>
 #include <osg/MatrixTransform>
+#include <osgManipulator/CommandManager>
+#include <osgManipulator/TranslateAxisDragger>

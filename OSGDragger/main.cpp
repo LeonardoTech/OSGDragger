@@ -1,5 +1,6 @@
 
 #include "OSGCommon.h"
+#include "PickModelHandler.h"
 
 osg::ref_ptr<osg::Node> createQuad()
 {
@@ -32,13 +33,38 @@ osg::ref_ptr<osg::Node> createQuad()
 	return geode.get();
 }
 
-int main()
+int main(int argc, char** argv)
 {
+	osg::ArgumentParser arguments(&argc, argv);
+	osg::Node* model = osgDB::readNodeFiles(arguments);
+	if (!model)model = osgDB::readNodeFile("cow.osg");
+
+	osg::ref_ptr<osgManipulator::Selection> selection = new osgManipulator::Selection;
+	selection->addChild(model);
+
+	float scale = model->getBound().radius()*1.6;
+	osg::ref_ptr<osgManipulator::TranslateAxisDragger> dragger = new osgManipulator::TranslateAxisDragger;
+	dragger->setupDefaultGeometry();
+	dragger->setMatrix(osg::Matrix::scale(scale, scale, scale) * osg::Matrix::translate(model->getBound().center()));
+
+	osg::ref_ptr<osg::Group> root = new osg::Group;
+	root->addChild(dragger.get());
+	root->addChild(selection.get());
+	//root->addChild(osgDB::readNodeFile("axes.osg"));
+
+	osg::ref_ptr<osgManipulator::CommandManager> manager = new osgManipulator::CommandManager;
+	manager->connect(*dragger, *selection);
+
 	osgViewer::Viewer viewer;
-	osg::Group* root = new osg::Group();
-	root->addChild(createQuad().get());
-	viewer.setSceneData(root);
-	viewer.realize();
-	viewer.run();
-	return 0;
+	viewer.addEventHandler(new PickModelHandler);
+	viewer.setSceneData(root.get());
+	return viewer.run();
+
+	//osgViewer::Viewer viewer;
+	//osg::Group* root = new osg::Group();
+	//root->addChild(createQuad().get());
+	//viewer.setSceneData(root);
+	//viewer.realize();
+	//viewer.run();
+	//return 0;
 }
